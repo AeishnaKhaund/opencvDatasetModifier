@@ -176,33 +176,34 @@ cv::Mat imageOverlayAndAugmentor::GaussianNoise(const cv::Mat src, double Mean, 
     return dst;
 }
 
-cv::Mat imageOverlayAndAugmentor::ColorJitter(const cv::Mat src, double maxjit)
-{
-    cv::Mat img, dst;
-    cv::cvtColor(src, img, cv::COLOR_BGR2HSV);
-
-    std::random_device rd;
-    std::mt19937 mt(rd());
-
-    std::uniform_int_distribution<std::mt19937::result_type> jitter(-maxjit,maxjit);
-
-    for (int c = 0; c<img.channels(); c++)
-    {
-        double jit = (int)jitter(mt);
-        
-        for (int i=0; i<img.rows; i++)
-        {
-            for (int j=0; j<img.cols; j++)
-            {
-                img.at<cv::Vec3b>(i,j)[c] = cv::saturate_cast<uchar>(img.at<cv::Vec3b>(i,j)[c]+ jit);
-            }
-        }
-    }
-
-    cv::cvtColor(img, dst, cv::COLOR_HSV2BGR);
-
-    return dst;
-}
+  cv::Mat imageOverlayAndAugmentor::ColorJitter(const cv::Mat src, double maxjit)
+  {
+//    cv::Mat img, dst;
+//    cv::cvtColor(src, img, cv::COLOR_BGR2HSV);
+//
+//    std::random_device rd;
+//    std::mt19937 mt(rd());
+//
+//    std::uniform_int_distribution<std::mt19937::result_type> jitter(0,maxjit);
+//
+//    for (int c = 0; c<img.channels(); c++)
+//    {
+//        double jit = (int)jitter(mt);
+//        
+//        for (int i=0; i<img.rows; i++)
+//        {
+//            for (int j=0; j<img.cols; j++)
+//            {
+//                img.at<cv::Vec3b>(i,j)[c] = cv::saturate_cast<uchar>(img.at<cv::Vec3b>(i,j)[c]+ jit);
+//            }
+//        }
+//    }
+//
+//    cv::cvtColor(img, dst, cv::COLOR_HSV2BGR);
+//
+//    return dst;
+      return src;
+  }
 
 cv::Mat imageOverlayAndAugmentor::imageOverlay(cv::Mat customImage, cv::Mat datasetImage,int x,int y,std::string imgName) 
 {
@@ -261,7 +262,7 @@ cv::Mat imageOverlayAndAugmentor::imageRotater(cv::Mat customImage,cv::Mat rando
     //bounding box calculations
 
     //rotating the image 
-    cv::Point2f center((customImage.cols - 1) / 2.0, (customImage.rows - 1) / 2.0);
+    cv::Point2f center(((double)customImage.cols - 1) / 2.0, ((double)customImage.rows - 1) / 2.0);
     cv::Mat rot = cv::getRotationMatrix2D(center, angle,1.0);
     cv::Rect2f bbox = cv::RotatedRect(cv::Point2f(), customImage.size(), angle).boundingRect2f();
     rot.at<double>(0, 2) += bbox.width / 2.0 - customImage.cols / 2.0;
@@ -315,8 +316,8 @@ cv::Mat imageOverlayAndAugmentor::imageRotater(cv::Mat customImage,cv::Mat rando
 
 void imageOverlayAndAugmentor::boundingBox(int x, int y, int h, int w, std::string name)
 {
-    double xmid = (double)(x + (h / 2))/1920;
-    double ymid = (double)(y + (w / 2))/1080;
+    double xmid = ((double)x + (double)(h / 2))/1920;
+    double ymid = ((double)y + (double)(w / 2))/1080;
     double H = (double)h / 1080;
     double W = (double) w / 1920;
     std::string bboxName;

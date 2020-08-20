@@ -8,4 +8,4 @@ include_directories(src/include/)
 
 add_executable(test_ex src/main.cpp src/folderParser.cpp src/imageOverlayAndAugmentor.cpp src/include/imageOverlayAndAugmentor.h)
 target_link_libraries(test_ex ${OpenCV_LIBS})
-target_link_libraries(test_ex stdc++fs)
+#target_link_libraries(test_ex stdc++fs)
