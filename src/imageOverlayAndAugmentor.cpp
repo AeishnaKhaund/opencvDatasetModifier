@@ -133,10 +133,10 @@ void imageOverlayAndAugmentor::imageController(std::string& analysisCustom,std::
             {
                 image = imageOverlay(customImage, datasetImage1, (int)x(mt3), (int)y(mt4), Name);
             }
-            else
+            /*else
             { 
                 image = imageRotater(customImage, datasetImage1, (int)x(mt3), (int)y(mt5), Name);
-            }
+            }*/
 
             imageSaver(imgName, image);
             
@@ -303,10 +303,10 @@ cv::Mat imageOverlayAndAugmentor::imageRotater(cv::Mat customImage,cv::Mat rando
 
     }
 
-    //cv::Mat image = randomImage;
-    //cv::Mat croppedImage;
-    //croppedImage = image(cv::Rect(x, y, dst.cols, dst.rows));
-    //dst.copyTo(croppedImage);
+    cv::Mat image = randomImage;
+    cv::Mat croppedImage;
+    croppedImage = image(cv::Rect(x, y, dst.cols, dst.rows));
+    dst.copyTo(croppedImage);
     std::string bboxName = imageName + ".txt";
     boundingBox(x, y, width, height, bboxName);
     return dst;
@@ -323,12 +323,21 @@ void imageOverlayAndAugmentor::boundingBox(int x, int y, int h, int w, std::stri
     std::string bboxName;
     if (fs::exists("bbox"))
     {
-        bboxName = "bbox\\" + name;
+    	#ifdef __linux__
+    		bboxName = "bbox/"+name;
+    	#elif _WIN32
+        	bboxName = "bbox\\" + name;
+        #endif
+
     }
     else
     {
         fs::create_directory("bbox");
-        bboxName = "bbox\\" + name;
+	#ifdef __linux__
+    		bboxName = "bbox/"+name;
+    	#elif _WIN32
+        	bboxName = "bbox\\" + name;
+        #endif
     }
     std::fstream fout;
     fout.open(bboxName, std::ios::out);
@@ -341,12 +350,20 @@ void imageOverlayAndAugmentor::imageSaver(std::string imgName,cv::Mat image)
     std::string imageName;
     if (fs::exists("image"))
     {
-        imageName = "image\\" + imgName;
+    	#ifdef __linux__
+    		imageName="image/"+imgName;
+    	#elif _WIN32
+        	imageName = "image\\" + imgName;
+        #endif
     }
     else
     {
         fs::create_directory("image");
-        imageName = "image\\" + imgName;
+        #ifdef __linux__
+    		imageName="image/"+imgName;
+    	#elif _WIN32
+        	imageName = "image\\" + imgName;
+        #endif
     }
     cv::imwrite(imageName, image);
     
